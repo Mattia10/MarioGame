@@ -1,13 +1,14 @@
 #include <SFML/Graphics.hpp>
 #include "Game.h"
 #include "WindowCamera/Camera.h"
+#include "Rendering/Renderer.h"
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Mario Game");
+	sf::RenderWindow window(sf::VideoMode(1200, 900), "Mario Game");
 	sf::Clock deltaClock;
-	Camera camera;
 
+	Renderer renderer(window);
 
 	Begin(window);
 	while (window.isOpen())
@@ -20,13 +21,14 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
+
 		window.setView(camera.GetView(window.getSize()));
 		Update(deltaTime);
 
-		window.clear();
+		window.clear(sf::Color(50, 50, 50));
 
 		// draw here
-		Render(window);
+		Render(renderer);
 
 		window.display();
 	}

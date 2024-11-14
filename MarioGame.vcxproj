@@ -111,6 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\C++Projects\MarioGame\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,6 +136,7 @@ ping -n 6 127.0.0.1 &gt; nul
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\C++Projects\MarioGame\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,11 +157,20 @@ ping -n 6 127.0.0.1 &gt; nul
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Private\Game.cpp" />
+    <ClCompile Include="Private\Map.cpp" />
+    <ClCompile Include="Private\Rendering\Renderer.cpp" />
+    <ClCompile Include="Private\Rendering\Resources.cpp" />
     <ClCompile Include="Private\WindowCamera\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Public\Game.h" />
+    <ClInclude Include="Public\Map.h" />
+    <ClInclude Include="Public\Rendering\Renderer.h" />
+    <ClInclude Include="Public\Rendering\Resources.h" />
     <ClInclude Include="Public\WindowCamera\Camera.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\brick.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
