@@ -9,7 +9,7 @@ void Map::CreateCheckerBoard(size_t width, size_t height)
 {
 	grid = std::vector(width, std::vector(height, 0));
 
-	int last = 0;
+	bool last = 0;
 
 	for (auto& column : grid)
 	{
@@ -43,5 +43,24 @@ void Map::Draw(Renderer& renderer)
 			y++;
 		}
 		x++;
+	}
+}
+
+void Map::InitFromImage(const sf::Image& image)
+{
+	grid.clear();
+	grid = std::vector(image.getSize().x, std::vector(image.getSize().y, 0));
+
+	for (size_t x = 0; x < grid.size(); x++)
+	{
+		for (size_t y = 0; y < grid[x].size(); y++)
+		{
+			sf::Color color = image.getPixel(x, y);
+			if (color == sf::Color::Black)
+			{
+				grid[x][y] = 1;
+			}
+		}
+
 	}
 }

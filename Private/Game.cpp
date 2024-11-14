@@ -6,8 +6,10 @@
 
 //sf::CircleShape circle(2.0f, 360u);
 
-Map map;
+Map map(16.0f);
 Camera camera(320.0f);
+
+const float movementSpeed = 100.0f;
 
 void Begin(const sf::Window& window)
 {
@@ -25,13 +27,31 @@ void Begin(const sf::Window& window)
 		}
 	}
 
-	map.CreateCheckerBoard(10, 10);
+	sf::Image image;
+	image.loadFromFile(path + "map.png");
+	map.InitFromImage(image);
+
 	camera.position = sf::Vector2f(160.0f, 160.0f);
 }
 
 void Update(float deltaTime)
 {
 
+	float move = movementSpeed;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+	{
+		move *= 2;
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		camera.position.x += move * deltaTime;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	{
+		camera.position.x -= move * deltaTime;
+	}
 }
 
 void Render(Renderer& renderer)
