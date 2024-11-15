@@ -1,15 +1,16 @@
 #include "Game.h"
 #include "Rendering/Resources.h"
 #include "Map.h"
+#include "Physics/Physics.h"
 
 #include <filesystem>
+#include <Characters/Mario.h>
 
 //sf::CircleShape circle(2.0f, 360u);
 
-Map map(16.0f);
-Camera camera(320.0f);
-
-const float movementSpeed = 100.0f;
+Map map(1.0f);
+Camera camera(20.0f);
+Mario mario;
 
 void Begin(const sf::Window& window)
 {
@@ -27,34 +28,28 @@ void Begin(const sf::Window& window)
 		}
 	}
 
+	Physics::Init();
+
 	sf::Image image;
 	image.loadFromFile(path + "map.png");
-	map.InitFromImage(image);
+	mario.position = map.InitFromImage(image);
+	mario.Begin();
 
-	camera.position = sf::Vector2f(160.0f, 160.0f);
 }
 
 void Update(float deltaTime)
 {
+	Physics::Update(deltaTime);
 
-	float move = movementSpeed;
+	mario.Update(deltaTime);
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-	{
-		move *= 2;
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		camera.position.x += move * deltaTime;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		camera.position.x -= move * deltaTime;
-	}
+	camera.position = mario.position;
 }
 
 void Render(Renderer& renderer)
 {
 	map.Draw(renderer);
+	mario.Draw(renderer);
+
+	Physics::DebugDraw(renderer);
 }

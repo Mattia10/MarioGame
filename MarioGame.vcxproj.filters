@@ -33,6 +33,12 @@
     <ClCompile Include="Private\Map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Private\Characters\Mario.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\Physics\Physics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Public\Game.h">
@@ -50,9 +56,21 @@
     <ClInclude Include="Public\Map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Public\Characters\Mario.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Physics\Physics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\brick.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\map.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\mario_idle.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

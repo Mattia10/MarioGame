@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+
 #include "Game.h"
 #include "WindowCamera/Camera.h"
 #include "Rendering/Renderer.h"
@@ -9,6 +10,8 @@ int main()
 	sf::Clock deltaClock;
 
 	Renderer renderer(window);
+
+	window.setFramerateLimit(60);
 
 	Begin(window);
 	while (window.isOpen())

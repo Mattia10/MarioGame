@@ -1,5 +1,8 @@
 #include "Map.h"
 #include "Rendering/Resources.h"
+#include <box2d/b2_body.h>
+#include <Physics/Physics.h>
+#include <box2d/b2_polygon_shape.h>
 
 Map::Map(float cellSize) : cellSize(cellSize), grid()
 {
@@ -46,10 +49,12 @@ void Map::Draw(Renderer& renderer)
 	}
 }
 
-void Map::InitFromImage(const sf::Image& image)
+sf::Vector2f Map::InitFromImage(const sf::Image& image)
 {
 	grid.clear();
 	grid = std::vector(image.getSize().x, std::vector(image.getSize().y, 0));
+
+	sf::Vector2f marioPosition{};
 
 	for (size_t x = 0; x < grid.size(); x++)
 	{
@@ -59,8 +64,23 @@ void Map::InitFromImage(const sf::Image& image)
 			if (color == sf::Color::Black)
 			{
 				grid[x][y] = 1;
+				b2BodyDef bodyDef{};
+				bodyDef.position.Set(cellSize * x + cellSize / 2.0f,
+					cellSize * y + cellSize / 2.0f);
+
+				b2Body* body = Physics::world.CreateBody(&bodyDef);
+				b2PolygonShape shape{};
+				shape.SetAsBox(cellSize / 2.0f, cellSize / 2.0f);
+				body->CreateFixture(&shape, 0.0f);
+			}
+			else if (color == sf::Color::Red)
+			{
+				marioPosition = sf::Vector2f(cellSize * x + cellSize / 2.0f,
+					cellSize * y + cellSize / 2.0f);
 			}
 		}
 
 	}
+
+	return marioPosition;
 }

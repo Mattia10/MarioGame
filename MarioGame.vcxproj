@@ -110,19 +110,19 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\C++Projects\MarioGame\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\C++Projects\box2d-2.4.2\include;D:\C++Projects\SFML-2.6.1\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\C++Projects\SFML-2.6.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\C++Projects\SFML-2.6.1\lib;D:\C++Projects\box2d-2.4.2\build\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreLinkEvent>
       <Message>
       </Message>
-      <Command>copy "$(ProjectDir)DLLs\*.dll" "$(TargetDir)"
+      <Command>copy "$(ProjectDir)..\DLLs\*.dll" "$(TargetDir)"
 ping -n 6 127.0.0.1 &gt; nul
 </Command>
     </PreLinkEvent>
@@ -135,7 +135,7 @@ ping -n 6 127.0.0.1 &gt; nul
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\C++Projects\MarioGame\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\C++Projects\box2d-2.4.2\include;D:\C++Projects\SFML-2.6.1\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -143,34 +143,40 @@ ping -n 6 127.0.0.1 &gt; nul
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\C++Projects\SFML-2.6.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\C++Projects\SFML-2.6.1\lib;D:\C++Projects\box2d-2.4.2\build\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreLinkEvent>
       <Message>
       </Message>
-      <Command>copy "$(ProjectDir)DLLs\*.dll" "$(TargetDir)"
+      <Command>copy "$(ProjectDir)..\DLLs\*.dll" "$(TargetDir)"
 ping -n 6 127.0.0.1 &gt; nul
 </Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Private\Characters\Mario.cpp" />
     <ClCompile Include="Private\Game.cpp" />
     <ClCompile Include="Private\Map.cpp" />
+    <ClCompile Include="Private\Physics\Physics.cpp" />
     <ClCompile Include="Private\Rendering\Renderer.cpp" />
     <ClCompile Include="Private\Rendering\Resources.cpp" />
     <ClCompile Include="Private\WindowCamera\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Public\Characters\Mario.h" />
     <ClInclude Include="Public\Game.h" />
     <ClInclude Include="Public\Map.h" />
+    <ClInclude Include="Public\Physics\Physics.h" />
     <ClInclude Include="Public\Rendering\Renderer.h" />
     <ClInclude Include="Public\Rendering\Resources.h" />
     <ClInclude Include="Public\WindowCamera\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\brick.png" />
+    <Image Include="Textures\map.png" />
+    <Image Include="Textures\mario_idle.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
