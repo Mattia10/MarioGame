@@ -1,4 +1,7 @@
 #include "Physics/Physics.h"
+#include <box2d/b2_contact.h>
+#include <box2d/b2_world_callbacks.h>
+#include <box2d/b2_draw.h>
 
 b2World Physics::world{ b2Vec2(0.0f, 9.2f) };
 MyDebugDraw* Physics::debugDraw{};
@@ -47,7 +50,10 @@ public:
 		circle.setOrigin(radius / 2.0f, radius / 2.0f);
 		circle.setFillColor(sf::Color::Transparent);
 		circle.setOutlineThickness(0.02f);
-		circle.setOutlineColor(sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255));
+		circle.setOutlineColor(sf::Color((sf::Uint8)color.r * 255, 
+			(sf::Uint8)color.g * 255, 
+			(sf::Uint8)color.b * 255,
+			(sf::Uint8)color.a * 255));
 
 		target.draw(circle);
 	}
@@ -56,8 +62,11 @@ public:
 	{
 		sf::CircleShape circle(radius);
 		circle.setPosition(center.x, center.y);
-		circle.setOrigin(radius / 2.0f, radius / 2.0f);
-		circle.setFillColor(sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 80));
+		circle.setOrigin(radius, radius);
+		circle.setFillColor(sf::Color((sf::Uint8)color.r * 255, 
+			(sf::Uint8)color.g * 255, 
+			(sf::Uint8)color.b * 255, 
+			(sf::Uint8)color.a * 120));
 
 		target.draw(circle);
 
@@ -93,7 +102,7 @@ public:
 	{
 		sf::CircleShape circle(size);
 		circle.setPosition(p.x, p.y);
-		circle.setOrigin(size / 2.0f, size / 2.0f);
+		circle.setOrigin(size, size);
 		circle.setFillColor(sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255));
 
 		target.draw(circle);
@@ -104,6 +113,35 @@ private:
 	sf::RenderTarget& target;
 };
 
+class MyGlobalContactListener : public b2ContactListener
+{
+	virtual void BeginContact(b2Contact* contact) override
+	{
+		ContactListener* listener = (ContactListener*)contact->GetFixtureA()->GetUserData().pointer;
+
+		if (listener)
+			listener->OnBeginContact();
+
+		listener = (ContactListener*)contact->GetFixtureB()->GetUserData().pointer;
+
+		if (listener)
+			listener->OnBeginContact();
+	}
+
+	virtual void EndContact(b2Contact* contact) override
+	{
+		ContactListener* listener = (ContactListener*)contact->GetFixtureA()->GetUserData().pointer;
+
+		if (listener)
+			listener->OnEndContact();
+
+		listener = (ContactListener*)contact->GetFixtureB()->GetUserData().pointer;
+
+		if (listener)
+			listener->OnEndContact();
+	}
+};
+
 void Physics::Init()
 {
 }
@@ -111,6 +149,7 @@ void Physics::Init()
 void Physics::Update(float deltaTime)
 {
 	world.Step(deltaTime, 6, 2);
+	world.SetContactListener(new MyGlobalContactListener());
 }
 
 void Physics::DebugDraw(Renderer& renderer)
@@ -118,7 +157,7 @@ void Physics::DebugDraw(Renderer& renderer)
 	if (!debugDraw)
 	{
 		debugDraw = new MyDebugDraw(renderer.target);
-		debugDraw->SetFlags(b2Draw::e_aabbBit);
+		debugDraw->SetFlags(b2Draw::e_shapeBit);
 		world.SetDebugDraw(debugDraw);
 	}
 

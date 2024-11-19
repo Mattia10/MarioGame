@@ -1,10 +1,16 @@
 #pragma once
 
 #include <box2d/b2_world.h>
-#include <box2d/b2_draw.h>
 #include <Rendering/Renderer.h>
 
 class MyDebugDraw;
+
+class ContactListener
+{
+public:
+	virtual void OnBeginContact() = 0;
+	virtual void OnEndContact() = 0;
+};
 
 class Physics
 {
