@@ -1,5 +1,8 @@
 #include "Map.h"
 #include "Rendering/Resources.h"
+#include "Objects/Coin.h"
+#include "Objects/Object.h"
+
 #include <box2d/b2_body.h>
 #include <Physics/Physics.h>
 #include <box2d/b2_polygon_shape.h>
@@ -49,7 +52,7 @@ void Map::Draw(Renderer& renderer)
 	}
 }
 
-sf::Vector2f Map::InitFromImage(const sf::Image& image)
+sf::Vector2f Map::InitFromImage(const sf::Image& image, std::vector<Object*>& objects)
 {
 	grid.clear();
 	grid = std::vector(image.getSize().x, std::vector(image.getSize().y, 0));
@@ -77,6 +80,13 @@ sf::Vector2f Map::InitFromImage(const sf::Image& image)
 			{
 				marioPosition = sf::Vector2f(cellSize * x + cellSize / 2.0f,
 					cellSize * y + cellSize / 2.0f);
+			}
+			else if (color == sf::Color::Yellow)
+			{
+				Object* coin = new Coin();
+				coin->position = sf::Vector2f(cellSize * x + cellSize / 2.0f,
+					cellSize * y + cellSize / 2.0f);
+				objects.push_back(coin);
 			}
 		}
 

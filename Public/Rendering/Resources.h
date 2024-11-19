@@ -2,10 +2,14 @@
 
 #include <SFML//Graphics.hpp>
 #include <unordered_map>
+#include <SFML/Audio.hpp>
 
 class Resources
 {
 public:
 	static std::unordered_map<std::string, sf::Texture> textures;
+
+	static std::unordered_map<std::string, sf::SoundBuffer> sounds;
+
 };
 

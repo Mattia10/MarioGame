@@ -156,18 +156,24 @@ ping -n 6 127.0.0.1 &gt; nul
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Private\Characters\Animation\Animation.cpp" />
     <ClCompile Include="Private\Characters\Mario.cpp" />
     <ClCompile Include="Private\Game.cpp" />
     <ClCompile Include="Private\Map.cpp" />
+    <ClCompile Include="Private\Objects\Coin.cpp" />
+    <ClCompile Include="Private\Objects\Object.cpp" />
     <ClCompile Include="Private\Physics\Physics.cpp" />
     <ClCompile Include="Private\Rendering\Renderer.cpp" />
     <ClCompile Include="Private\Rendering\Resources.cpp" />
     <ClCompile Include="Private\WindowCamera\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Public\Characters\Animation\Animation.h" />
     <ClInclude Include="Public\Characters\Mario.h" />
     <ClInclude Include="Public\Game.h" />
     <ClInclude Include="Public\Map.h" />
+    <ClInclude Include="Public\Objects\Coin.h" />
+    <ClInclude Include="Public\Objects\Object.h" />
     <ClInclude Include="Public\Physics\Physics.h" />
     <ClInclude Include="Public\Rendering\Renderer.h" />
     <ClInclude Include="Public\Rendering\Resources.h" />

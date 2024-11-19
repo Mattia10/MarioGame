@@ -28,7 +28,7 @@ int main()
 		window.setView(camera.GetView(window.getSize()));
 		Update(deltaTime);
 
-		window.clear(sf::Color(50, 50, 50));
+		window.clear();
 
 		// draw here
 		Render(renderer);

@@ -148,7 +148,7 @@ void Physics::Init()
 
 void Physics::Update(float deltaTime)
 {
-	world.Step(deltaTime, 6, 2);
+	world.Step(deltaTime, 4, 4);
 	world.SetContactListener(new MyGlobalContactListener());
 }
 
@@ -157,7 +157,7 @@ void Physics::DebugDraw(Renderer& renderer)
 	if (!debugDraw)
 	{
 		debugDraw = new MyDebugDraw(renderer.target);
-		debugDraw->SetFlags(b2Draw::e_shapeBit);
+		debugDraw->SetFlags(0u);
 		world.SetDebugDraw(debugDraw);
 	}
 

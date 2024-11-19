@@ -1,8 +1,10 @@
 #pragma once
 #include "Rendering/Renderer.h"
 #include "Physics/Physics.h"
+#include "Characters/Animation/Animation.h"
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <box2d/b2_body.h>
 
 class Mario : public ContactListener
@@ -20,7 +22,13 @@ public:
 	float angle{};
 
 private:
+
+	Animation runAnimation{};
+	sf::Texture textureToDraw{};
+	sf::Sound jumpSound{};
+
 	b2Body* body{};
-	bool isGrounded = false;
+	size_t isGrounded = false;
+	bool facingLeft = false;
 };
 
