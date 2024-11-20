@@ -25,13 +25,15 @@ int main()
 				window.close();
 		}
 
-		window.setView(camera.GetView(window.getSize()));
 		Update(deltaTime);
-
+		
 		window.clear();
 
-		// draw here
+		window.setView(camera.GetView(window.getSize()));
 		Render(renderer);
+
+		window.setView(camera.GetUIView());
+		RenderUI(renderer);
 
 		window.display();
 	}

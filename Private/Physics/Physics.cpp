@@ -18,7 +18,7 @@ public:
 	void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override
 	{
 		sf::ConvexShape shape(vertexCount);
-		for (size_t i = 0; i < vertexCount; i++)
+		for (int i = 0; i < vertexCount; i++)
 		{
 			shape.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y));
 		}
@@ -33,7 +33,7 @@ public:
 	void DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override
 	{
 		sf::ConvexShape shape(vertexCount);
-		for (size_t i = 0; i < vertexCount; i++)
+		for (int i = 0; i < vertexCount; i++)
 		{
 			shape.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y));
 		}
@@ -117,28 +117,28 @@ class MyGlobalContactListener : public b2ContactListener
 {
 	virtual void BeginContact(b2Contact* contact) override
 	{
-		ContactListener* listener = (ContactListener*)contact->GetFixtureA()->GetUserData().pointer;
+		FixtureData* data = (FixtureData*)contact->GetFixtureA()->GetUserData().pointer;
 
-		if (listener)
-			listener->OnBeginContact();
+		if (data && data->listener)
+			data->listener->OnBeginContact(contact->GetFixtureA(), contact->GetFixtureB());
 
-		listener = (ContactListener*)contact->GetFixtureB()->GetUserData().pointer;
+		data = (FixtureData*)contact->GetFixtureB()->GetUserData().pointer;
 
-		if (listener)
-			listener->OnBeginContact();
+		if (data && data->listener)
+			data->listener->OnBeginContact(contact->GetFixtureB(), contact->GetFixtureA());
 	}
 
 	virtual void EndContact(b2Contact* contact) override
 	{
-		ContactListener* listener = (ContactListener*)contact->GetFixtureA()->GetUserData().pointer;
+		FixtureData* data = (FixtureData*)contact->GetFixtureA()->GetUserData().pointer;
 
-		if (listener)
-			listener->OnEndContact();
+		if (data && data->listener)
+			data->listener->OnEndContact(contact->GetFixtureA(), contact->GetFixtureB());
 
-		listener = (ContactListener*)contact->GetFixtureB()->GetUserData().pointer;
+		data = (FixtureData*)contact->GetFixtureB()->GetUserData().pointer;
 
-		if (listener)
-			listener->OnEndContact();
+		if (data && data->listener)
+			data->listener->OnEndContact(contact->GetFixtureB(), contact->GetFixtureA());
 	}
 };
 

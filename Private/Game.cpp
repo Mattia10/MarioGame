@@ -16,8 +16,12 @@ std::vector<Object*> objects{};
 
 std::string texturePath = "./Textures/";
 std::string soundPath = "./Sounds/";
+std::string fontPath = "./Fonts/"; 
 
 sf::Music music{};
+
+sf::Font font{};
+sf::Text coinsText("Coins", font);
 
 void Begin(const sf::Window& window)
 {
@@ -46,7 +50,13 @@ void Begin(const sf::Window& window)
 	music.openFromFile(soundPath + "music.ogg");
 	music.setLoop(true);
 	music.setVolume(50);
-	
+
+	font.loadFromFile(fontPath + "font.ttf");
+	coinsText.setFillColor(sf::Color::White);
+	coinsText.setOutlineColor(sf::Color::Black);
+	coinsText.setOutlineThickness(1.0f);
+	coinsText.setScale(0.1f, 0.1f);
+
 	Physics::Init();
 
 	sf::Image image;
@@ -88,4 +98,22 @@ void Render(Renderer& renderer)
 	mario.Draw(renderer);
 
 	Physics::DebugDraw(renderer);
+}
+
+void RenderUI(Renderer& renderer)
+{
+	coinsText.setPosition(-camera.GetViewSize() / 2.0f + sf::Vector2f(2.0f, 1.0f));
+	coinsText.setString("Coins: " + std::to_string(mario.GetCoins()));
+
+	renderer.target.draw(coinsText);
+}
+
+void DeleteObject(Object* object)
+{
+	const auto& it = std::find(objects.begin(), objects.end(), object);
+	if (it != objects.end())
+	{
+		delete *it;
+		objects.erase(it);
+	}
 }

@@ -14,21 +14,28 @@ public:
 	void Update(float deltaTime);
 	void Draw(Renderer& renderer);
 
+	size_t GetCoins() { return coins; }
+
 	// Inherited via ContactListener
-	void OnBeginContact() override;
-	void OnEndContact() override;
+	void OnBeginContact(b2Fixture* self, b2Fixture* other) override;
+	void OnEndContact(b2Fixture* self, b2Fixture* other) override;
 
 	sf::Vector2f position{};
 	float angle{};
 
 private:
 
+	FixtureData fixtureData{};
+	b2Body* body{};
+	b2Fixture* groundFixture;
+
 	Animation runAnimation{};
 	sf::Texture textureToDraw{};
 	sf::Sound jumpSound{};
 
-	b2Body* body{};
 	size_t isGrounded = false;
 	bool facingLeft = false;
+
+	size_t coins{};
 };
 

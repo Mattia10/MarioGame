@@ -2,14 +2,37 @@
 
 #include <box2d/b2_world.h>
 #include <Rendering/Renderer.h>
+#include <box2d/b2_fixture.h>
 
 class MyDebugDraw;
+class Mario;
+class Object;
 
 class ContactListener
 {
 public:
-	virtual void OnBeginContact() = 0;
-	virtual void OnEndContact() = 0;
+	virtual void OnBeginContact(b2Fixture* self, b2Fixture* other) = 0;
+	virtual void OnEndContact(b2Fixture* self, b2Fixture* other) = 0;
+};
+
+enum class FixtureDataType
+{
+	Mario,
+	MapTile,
+	Object
+};
+
+struct FixtureData
+{
+	ContactListener* listener;
+	FixtureDataType type;
+
+	union
+	{
+		Mario* mario;
+		Object* object;
+		struct { int mapX, mapY; };
+	};
 };
 
 class Physics

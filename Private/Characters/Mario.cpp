@@ -1,9 +1,12 @@
 #include "Characters/Mario.h"
 #include "Rendering/Resources.h"
+#include "Objects/Object.h"
+#include "Game.h"
 
 #include <box2d/b2_polygon_shape.h>
 #include <box2d/b2_circle_shape.h>
 #include <box2d/b2_fixture.h>
+#include <iostream>
 
 constexpr float M_PI = 22.0f / 7.0f;
 
@@ -22,6 +25,10 @@ void Mario::Begin()
 	jumpSound.setBuffer(Resources::sounds["jump.wav"]);
 	jumpSound.setVolume(25);
 
+	fixtureData.listener = this;
+	fixtureData.mario = this;
+	fixtureData.type = FixtureDataType::Mario;
+
 	b2BodyDef bodyDef{};
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(position.x, position.y);
@@ -29,6 +36,7 @@ void Mario::Begin()
 	body = Physics::world.CreateBody(&bodyDef);
 
 	b2FixtureDef fixtureDef{};
+	fixtureDef.userData.pointer = (uintptr_t)&fixtureData;
 	fixtureDef.density = 1.0f;
 	fixtureDef.friction = 0.0f;
 
@@ -47,9 +55,8 @@ void Mario::Begin()
 	body->CreateFixture(&fixtureDef);
 
 	polygonShape.SetAsBox(0.4f, 0.2f, b2Vec2(0.0f, 1.0f), 0.0f);
-	fixtureDef.userData.pointer = (uintptr_t)this;
 	fixtureDef.isSensor = true;
-	body->CreateFixture(&fixtureDef);
+	groundFixture = body->CreateFixture(&fixtureDef);
 }
 
 void Mario::Update(float deltaTime)
@@ -114,13 +121,29 @@ void Mario::Draw(Renderer& renderer)
 		angle);
 }
 
-void Mario::OnBeginContact()
+void Mario::OnBeginContact(b2Fixture* self, b2Fixture* other)
 {
-	isGrounded++;
+	FixtureData* data = (FixtureData*)other->GetUserData().pointer;
+
+	if (!data)
+		return;
+
+	if(groundFixture == self && data->type == FixtureDataType::MapTile)
+		isGrounded++;
+	else if (data->type == FixtureDataType::Object && data->object->tag == "coin")
+	{
+		DeleteObject(data->object);
+		std::cout << "coins = " << ++coins << "\n";
+	}
 }
 
-void Mario::OnEndContact()
+void Mario::OnEndContact(b2Fixture* self, b2Fixture* other)
 {
-	if(isGrounded > 0)
+	FixtureData* data = (FixtureData*)other->GetUserData().pointer;
+
+	if (!data)
+		return;
+
+	if (groundFixture == self && data->type == FixtureDataType::MapTile && isGrounded > 0)
 		isGrounded--;
 }

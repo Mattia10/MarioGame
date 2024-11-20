@@ -4,6 +4,7 @@
 #include "Objects/Object.h"
 
 #include <box2d/b2_body.h>
+#include <box2d/b2_fixture.h>
 #include <Physics/Physics.h>
 #include <box2d/b2_polygon_shape.h>
 
@@ -74,7 +75,17 @@ sf::Vector2f Map::InitFromImage(const sf::Image& image, std::vector<Object*>& ob
 				b2Body* body = Physics::world.CreateBody(&bodyDef);
 				b2PolygonShape shape{};
 				shape.SetAsBox(cellSize / 2.0f, cellSize / 2.0f);
-				body->CreateFixture(&shape, 0.0f);
+
+				FixtureData* fixtureData = new FixtureData();
+				fixtureData->type = FixtureDataType::MapTile;
+				fixtureData->mapX = x;
+				fixtureData->mapY = y;
+
+				b2FixtureDef fixtureDef{};
+				fixtureDef.userData.pointer = (uintptr_t)fixtureData;
+				fixtureDef.density = 0.0f;
+				fixtureDef.shape = &shape;
+				body->CreateFixture(&fixtureDef);
 			}
 			else if (color == sf::Color::Red)
 			{
