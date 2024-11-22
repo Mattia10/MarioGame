@@ -3,6 +3,7 @@
 #include <box2d/b2_world.h>
 #include <Rendering/Renderer.h>
 #include <box2d/b2_fixture.h>
+#include <set>
 
 class MyDebugDraw;
 class Mario;
@@ -42,7 +43,17 @@ public:
 	static void Update(float deltaTime);
 	static void DebugDraw(Renderer& renderer);
 
+	static void QueueBodyForDestruction(b2Body* body);
+
 	static b2World world;
 	static MyDebugDraw* debugDraw;
+
+private:
+
+	static void SafeDestroyBody(b2Body* body);
+	static void DestroyQueuedBodies();
+
+	static std::set<std::pair<b2Fixture*, b2Fixture*>> activeContacts;
+
 };
 

@@ -3,6 +3,7 @@
 #include <box2d/b2_polygon_shape.h>
 #include <box2d/b2_fixture.h>
 #include <Physics/Physics.h>
+#include <Game.h>
 
 
 Coin::~Coin()
@@ -34,7 +35,7 @@ void Coin::Begin()
 
 	b2BodyDef bodyDef{};
 	bodyDef.position.Set(position.x, position.y);
-	b2Body* body = Physics::world.CreateBody(&bodyDef);
+	body = Physics::world.CreateBody(&bodyDef);
 	b2PolygonShape shape{};
 	shape.SetAsBox(0.4f, 0.4f);
 
@@ -53,6 +54,19 @@ void Coin::Begin()
 void Coin::Render(Renderer& renderer)
 {
 	renderer.Draw(animation.GetTexture(), position, sf::Vector2f(0.8f, 0.8f));
+}
+
+void Coin::OnDestroy()
+{
+	//ManualPhysicDestroy();
+	//QueueObjectForDestruction(this);
+
+	ManualDestroyObject(this);
+}
+
+void Coin::ManualPhysicDestroy()
+{
+	body->GetWorld()->DestroyBody(body);
 }
 
 void Coin::Update(float deltaTime)

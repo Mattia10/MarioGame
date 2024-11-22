@@ -15,6 +15,6 @@ public:
 
 	void Draw(Renderer& renderer);
 
-	std::vector<std::vector<int>> grid;
+	std::vector<std::vector<sf::Texture*>> grid;
 	float cellSize;
 };

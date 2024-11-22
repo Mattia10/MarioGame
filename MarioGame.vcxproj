@@ -157,6 +157,7 @@ ping -n 6 127.0.0.1 &gt; nul
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Private\Characters\Animation\Animation.cpp" />
+    <ClCompile Include="Private\Characters\Enemy.cpp" />
     <ClCompile Include="Private\Characters\Mario.cpp" />
     <ClCompile Include="Private\Game.cpp" />
     <ClCompile Include="Private\Map.cpp" />
@@ -169,6 +170,7 @@ ping -n 6 127.0.0.1 &gt; nul
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Public\Characters\Animation\Animation.h" />
+    <ClInclude Include="Public\Characters\Enemy.h" />
     <ClInclude Include="Public\Characters\Mario.h" />
     <ClInclude Include="Public\Game.h" />
     <ClInclude Include="Public\Map.h" />

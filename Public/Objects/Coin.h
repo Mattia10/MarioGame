@@ -12,8 +12,12 @@ public:
 	virtual void Update(float deltaTime) override;
 	virtual void Render(Renderer& renderer) override;
 
+	virtual void OnDestroy() override;
+
 private:
 	Animation animation;
 	b2Body* body;
+
+	void ManualPhysicDestroy();
 };
 

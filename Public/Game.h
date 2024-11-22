@@ -11,4 +11,7 @@ void Update(float deltaTime);
 void Render(Renderer& renderer);
 void RenderUI(Renderer& renderer);
 
-void DeleteObject(Object* object);
+void QueueObjectForDestruction(Object* object);
+
+void ManualDestroyObject(Object* object);
+void DestroyQueuedObjects();

@@ -7,6 +7,8 @@
 #include <box2d/b2_circle_shape.h>
 #include <box2d/b2_fixture.h>
 #include <iostream>
+#include <Characters/Enemy.h>
+#include <Objects/Coin.h>
 
 constexpr float M_PI = 22.0f / 7.0f;
 
@@ -132,8 +134,17 @@ void Mario::OnBeginContact(b2Fixture* self, b2Fixture* other)
 		isGrounded++;
 	else if (data->type == FixtureDataType::Object && data->object->tag == "coin")
 	{
-		DeleteObject(data->object);
 		std::cout << "coins = " << ++coins << "\n";
+		data->object->OnDestroy();
+		
+	}
+	else if (groundFixture == self && data->type == FixtureDataType::Object && data->object->tag == "enemy")
+	{
+		Enemy* enemy = dynamic_cast<Enemy*>(data->object);
+		if (enemy)
+		{
+			enemy->Die();
+		}
 	}
 }
 

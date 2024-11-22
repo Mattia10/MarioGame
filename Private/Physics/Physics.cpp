@@ -2,9 +2,12 @@
 #include <box2d/b2_contact.h>
 #include <box2d/b2_world_callbacks.h>
 #include <box2d/b2_draw.h>
+#include <iostream>
 
 b2World Physics::world{ b2Vec2(0.0f, 9.2f) };
 MyDebugDraw* Physics::debugDraw{};
+std::vector<b2Body*> bodiesToDestroy;
+std::set<std::pair<b2Fixture*, b2Fixture*>> activeContacts;
 
 class MyDebugDraw : public b2Draw
 {
@@ -117,28 +120,40 @@ class MyGlobalContactListener : public b2ContactListener
 {
 	virtual void BeginContact(b2Contact* contact) override
 	{
-		FixtureData* data = (FixtureData*)contact->GetFixtureA()->GetUserData().pointer;
+		auto contactPair = std::make_pair(contact->GetFixtureA(), contact->GetFixtureB());
 
-		if (data && data->listener)
-			data->listener->OnBeginContact(contact->GetFixtureA(), contact->GetFixtureB());
+		if (activeContacts.find(contactPair) != activeContacts.end())
+		{
+			std::cout << "Duplicate BeginContact detected!" << std::endl;
+			return;
+		}
 
-		data = (FixtureData*)contact->GetFixtureB()->GetUserData().pointer;
+		activeContacts.insert(contactPair);
 
-		if (data && data->listener)
-			data->listener->OnBeginContact(contact->GetFixtureB(), contact->GetFixtureA());
+		FixtureData* dataA = reinterpret_cast<FixtureData*>(contact->GetFixtureA()->GetUserData().pointer);
+		FixtureData* dataB = reinterpret_cast<FixtureData*>(contact->GetFixtureB()->GetUserData().pointer);
+
+		if (dataA && dataA->listener)
+			dataA->listener->OnBeginContact(contact->GetFixtureA(), contact->GetFixtureB());
+
+		if (dataB != nullptr && dataB->listener != nullptr)
+			dataB->listener->OnBeginContact(contact->GetFixtureB(), contact->GetFixtureA());
 	}
 
 	virtual void EndContact(b2Contact* contact) override
 	{
-		FixtureData* data = (FixtureData*)contact->GetFixtureA()->GetUserData().pointer;
+		auto contactPair = std::make_pair(contact->GetFixtureA(), contact->GetFixtureB());
 
-		if (data && data->listener)
-			data->listener->OnEndContact(contact->GetFixtureA(), contact->GetFixtureB());
+		activeContacts.erase(contactPair);
 
-		data = (FixtureData*)contact->GetFixtureB()->GetUserData().pointer;
+		FixtureData* dataA = reinterpret_cast<FixtureData*>(contact->GetFixtureA()->GetUserData().pointer);
+		FixtureData* dataB = reinterpret_cast<FixtureData*>(contact->GetFixtureB()->GetUserData().pointer);
 
-		if (data && data->listener)
-			data->listener->OnEndContact(contact->GetFixtureB(), contact->GetFixtureA());
+		if (dataA && dataA->listener)
+			dataA->listener->OnEndContact(contact->GetFixtureA(), contact->GetFixtureB());
+
+		if (dataB && dataB->listener)
+			dataB->listener->OnEndContact(contact->GetFixtureB(), contact->GetFixtureA());
 	}
 };
 
@@ -150,6 +165,7 @@ void Physics::Update(float deltaTime)
 {
 	world.Step(deltaTime, 4, 4);
 	world.SetContactListener(new MyGlobalContactListener());
+	DestroyQueuedBodies();
 }
 
 void Physics::DebugDraw(Renderer& renderer)
@@ -157,9 +173,49 @@ void Physics::DebugDraw(Renderer& renderer)
 	if (!debugDraw)
 	{
 		debugDraw = new MyDebugDraw(renderer.target);
-		debugDraw->SetFlags(0u);
+		debugDraw->SetFlags(b2Draw::e_aabbBit);
 		world.SetDebugDraw(debugDraw);
 	}
-
+	
 	world.DebugDraw();
+}
+
+void Physics::QueueBodyForDestruction(b2Body* body)
+{
+	if (body)
+	{
+		bodiesToDestroy.push_back(body);
+		std::cout << "Queued body for destruction: " << body << std::endl;
+	}
+}
+
+void Physics::DestroyQueuedBodies()
+{
+	for (b2Body* body : bodiesToDestroy)
+	{
+		SafeDestroyBody(body);
+	}
+	bodiesToDestroy.clear();
+}
+
+void Physics::SafeDestroyBody(b2Body* body)
+{
+	if (!body)
+		return;
+
+	if (body->GetType() != b2BodyType::b2_staticBody)
+	{
+		for (b2Fixture* fixture = body->GetFixtureList(); fixture != nullptr; )
+		{
+			b2Fixture* nextFixture = fixture->GetNext();
+
+			if (fixture->GetUserData().pointer)
+			{
+				fixture->GetUserData().pointer = 0;
+			}
+			fixture = nextFixture;
+		}
+	}
+	
+	body->GetWorld()->DestroyBody(body);
 }

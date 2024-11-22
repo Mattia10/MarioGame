@@ -9,6 +9,8 @@ public:
 	virtual void Update(float deltaTime) {};
 	virtual void Render(Renderer& renderer) {};
 
+	virtual void OnDestroy() {};
+
 	std::string tag{};
 
 	sf::Vector2f position{};

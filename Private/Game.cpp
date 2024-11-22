@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <SFML/Audio.hpp>
 
-//sf::CircleShape circle(2.0f, 360u);
+std::vector<Object*> ObjectsToDestroy;
 
 Map map(1.0f);
 Camera camera(20.0f);
@@ -25,9 +25,6 @@ sf::Text coinsText("Coins", font);
 
 void Begin(const sf::Window& window)
 {
-	/*circle.setOrigin(sf::Vector2f(circle.getRadius(), circle.getRadius()));
-	circle.setFillColor(sf::Color::Red);*/
-
 	//folder path
 
 	for (auto& file : std::filesystem::directory_iterator(texturePath))
@@ -83,6 +80,8 @@ void Update(float deltaTime)
 	{
 		object->Update(deltaTime);
 	}
+
+	DestroyQueuedObjects();
 }
 
 void Render(Renderer& renderer)
@@ -108,12 +107,31 @@ void RenderUI(Renderer& renderer)
 	renderer.target.draw(coinsText);
 }
 
-void DeleteObject(Object* object)
+void QueueObjectForDestruction(Object* object)
+{
+	ObjectsToDestroy.push_back(object);
+}
+
+void DestroyQueuedObjects()
+{
+	for (Object* object : ObjectsToDestroy)
+	{
+		const auto& it = std::find(objects.begin(), objects.end(), object);
+		if (it != objects.end())
+		{
+			delete* it;
+			objects.erase(it);
+		}
+	}
+	ObjectsToDestroy.clear();
+}
+
+void ManualDestroyObject(Object* object)
 {
 	const auto& it = std::find(objects.begin(), objects.end(), object);
 	if (it != objects.end())
 	{
-		delete *it;
+		delete* it;
 		objects.erase(it);
 	}
 }
