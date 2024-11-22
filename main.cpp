@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "WindowCamera/Camera.h"
 #include "Rendering/Renderer.h"
+#include <iostream>
 
 int main()
 {
@@ -13,7 +14,7 @@ int main()
 
 	window.setFramerateLimit(60);
 
-	Begin(window);
+	Begin();
 	while (window.isOpen())
 	{
 		float deltaTime = deltaClock.restart().asSeconds();
@@ -22,7 +23,14 @@ int main()
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
+			{
 				window.close();
+			}
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+			{
+				std::cout << "button pressed2" << std::endl;
+				paused = !paused;
+			}
 		}
 
 		Update(deltaTime);

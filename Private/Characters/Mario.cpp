@@ -35,7 +35,7 @@ void Mario::Begin()
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(position.x, position.y);
 	bodyDef.fixedRotation = true;
-	body = Physics::world.CreateBody(&bodyDef);
+	body = Physics::world->CreateBody(&bodyDef);
 
 	b2FixtureDef fixtureDef{};
 	fixtureDef.userData.pointer = (uintptr_t)&fixtureData;
@@ -138,12 +138,21 @@ void Mario::OnBeginContact(b2Fixture* self, b2Fixture* other)
 		data->object->OnDestroy();
 		
 	}
-	else if (groundFixture == self && data->type == FixtureDataType::Object && data->object->tag == "enemy")
+	else if (data->type == FixtureDataType::Object && data->object->tag == "enemy")
 	{
 		Enemy* enemy = dynamic_cast<Enemy*>(data->object);
-		if (enemy)
+		if (!enemy)
+			return;
+
+		if (groundFixture == self)
 		{
 			enemy->Die();
+
+		}
+		else if (!enemy->IsDead())
+		{
+			isDead = true;
+			
 		}
 	}
 }

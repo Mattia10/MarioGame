@@ -4,8 +4,9 @@
 #include <box2d/b2_draw.h>
 #include <iostream>
 
-b2World Physics::world{ b2Vec2(0.0f, 9.2f) };
+b2World* Physics::world{};
 MyDebugDraw* Physics::debugDraw{};
+
 std::vector<b2Body*> bodiesToDestroy;
 std::set<std::pair<b2Fixture*, b2Fixture*>> activeContacts;
 
@@ -80,7 +81,7 @@ public:
 	void DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) override
 	{
 		sf::VertexArray va(sf::Lines, 2);
-		sf::Color sfColor = sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255);
+		sf::Color sfColor = sf::Color(color.r * 255.0f, color.g * 255.0f, color.b * 255.0f, color.a * 255.0f);
 
 		va[0].position = sf::Vector2f(p1.x, p1.y);
 		va[0].color = sfColor;
@@ -120,7 +121,7 @@ class MyGlobalContactListener : public b2ContactListener
 {
 	virtual void BeginContact(b2Contact* contact) override
 	{
-		auto contactPair = std::make_pair(contact->GetFixtureA(), contact->GetFixtureB());
+		/*auto contactPair = std::make_pair(contact->GetFixtureA(), contact->GetFixtureB());
 
 		if (activeContacts.find(contactPair) != activeContacts.end())
 		{
@@ -128,7 +129,7 @@ class MyGlobalContactListener : public b2ContactListener
 			return;
 		}
 
-		activeContacts.insert(contactPair);
+		activeContacts.insert(contactPair);*/
 
 		FixtureData* dataA = reinterpret_cast<FixtureData*>(contact->GetFixtureA()->GetUserData().pointer);
 		FixtureData* dataB = reinterpret_cast<FixtureData*>(contact->GetFixtureB()->GetUserData().pointer);
@@ -142,9 +143,9 @@ class MyGlobalContactListener : public b2ContactListener
 
 	virtual void EndContact(b2Contact* contact) override
 	{
-		auto contactPair = std::make_pair(contact->GetFixtureA(), contact->GetFixtureB());
+		/*auto contactPair = std::make_pair(contact->GetFixtureA(), contact->GetFixtureB());
 
-		activeContacts.erase(contactPair);
+		activeContacts.erase(contactPair);*/
 
 		FixtureData* dataA = reinterpret_cast<FixtureData*>(contact->GetFixtureA()->GetUserData().pointer);
 		FixtureData* dataB = reinterpret_cast<FixtureData*>(contact->GetFixtureB()->GetUserData().pointer);
@@ -159,12 +160,17 @@ class MyGlobalContactListener : public b2ContactListener
 
 void Physics::Init()
 {
+	if (world)
+		delete world;
+
+	world = new b2World(b2Vec2(0.0f, 9.2f));
+	world->SetDebugDraw(debugDraw);
 }
 
 void Physics::Update(float deltaTime)
 {
-	world.Step(deltaTime, 4, 4);
-	world.SetContactListener(new MyGlobalContactListener());
+	world->Step(deltaTime, 4, 4);
+	world->SetContactListener(new MyGlobalContactListener());
 	DestroyQueuedBodies();
 }
 
@@ -173,11 +179,11 @@ void Physics::DebugDraw(Renderer& renderer)
 	if (!debugDraw)
 	{
 		debugDraw = new MyDebugDraw(renderer.target);
-		debugDraw->SetFlags(b2Draw::e_aabbBit);
-		world.SetDebugDraw(debugDraw);
+		debugDraw->SetFlags(0u);
+		world->SetDebugDraw(debugDraw);
 	}
 	
-	world.DebugDraw();
+	world->DebugDraw();
 }
 
 void Physics::QueueBodyForDestruction(b2Body* body)

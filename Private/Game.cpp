@@ -13,6 +13,10 @@ Map map(1.0f);
 Camera camera(20.0f);
 Mario mario;
 std::vector<Object*> objects{};
+sf::Image mapImage{};
+
+bool paused = false;
+sf::RectangleShape backgroudShape(sf::Vector2f(1.0f, 1.0f));
 
 std::string texturePath = "./Textures/";
 std::string soundPath = "./Sounds/";
@@ -23,7 +27,36 @@ sf::Music music{};
 sf::Font font{};
 sf::Text coinsText("Coins", font);
 
-void Begin(const sf::Window& window)
+void Restart()
+{
+	Physics::Init();
+
+	mario = Mario();
+
+
+	//hard reset, need to find a better way
+	for (auto& object : objects)
+	{
+		if (object)
+			ManualDestroyObject(object);
+	}
+
+	mario.position = map.InitFromImage(mapImage, objects);
+
+	mario.isDead = false;
+	paused = false;
+
+	mario.Begin();
+
+	for (auto& object : objects)
+	{
+		object->Begin();
+	}
+
+	music.play();
+}
+
+void Begin()
 {
 	//folder path
 
@@ -54,25 +87,25 @@ void Begin(const sf::Window& window)
 	coinsText.setOutlineThickness(1.0f);
 	coinsText.setScale(0.1f, 0.1f);
 
-	Physics::Init();
+	backgroudShape.setFillColor(sf::Color(0, 0, 0, 150));
+	backgroudShape.setOrigin(0.5f, 0.5f);
 
-	sf::Image image;
-	image.loadFromFile(texturePath + "map.png");
-	mario.position = map.InitFromImage(image, objects);
-	mario.Begin();
+	mapImage.loadFromFile(texturePath + "map.png");
 
-	for (auto& object : objects)
-	{
-		object->Begin();
-	}
-
-	music.play();
+	Restart();
 }
 
 void Update(float deltaTime)
 {
-	Physics::Update(deltaTime);
+	if (mario.isDead && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		Restart();
+	}
 
+	if (mario.isDead || paused)
+		return;
+
+	Physics::Update(deltaTime);
 	mario.Update(deltaTime);
 	camera.position = mario.position;
 
@@ -103,8 +136,13 @@ void RenderUI(Renderer& renderer)
 {
 	coinsText.setPosition(-camera.GetViewSize() / 2.0f + sf::Vector2f(2.0f, 1.0f));
 	coinsText.setString("Coins: " + std::to_string(mario.GetCoins()));
-
 	renderer.target.draw(coinsText);
+
+	if (paused || mario.isDead)
+	{
+		backgroudShape.setScale(camera.GetViewSize());
+		renderer.target.draw(backgroudShape);
+	}
 }
 
 void QueueObjectForDestruction(Object* object)

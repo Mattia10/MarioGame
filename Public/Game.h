@@ -5,8 +5,9 @@
 #include "Objects/Object.h"
 
 extern Camera camera;
+extern bool paused;
 
-void Begin(const sf::Window& window);
+void Begin();
 void Update(float deltaTime);
 void Render(Renderer& renderer);
 void RenderUI(Renderer& renderer);

@@ -107,7 +107,7 @@ sf::Vector2f Map::InitFromImage(const sf::Image& image, std::vector<Object*>& ob
 				bodyDef.position.Set(cellSize * x + cellSize / 2.0f,
 					cellSize * y + cellSize / 2.0f);
 
-				b2Body* body = Physics::world.CreateBody(&bodyDef);
+				b2Body* body = Physics::world->CreateBody(&bodyDef);
 				b2PolygonShape shape{};
 				shape.SetAsBox(cellSize / 2.0f, cellSize / 2.0f);
 

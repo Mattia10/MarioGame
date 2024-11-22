@@ -45,7 +45,7 @@ public:
 
 	static void QueueBodyForDestruction(b2Body* body);
 
-	static b2World world;
+	static b2World* world;
 	static MyDebugDraw* debugDraw;
 
 private:
